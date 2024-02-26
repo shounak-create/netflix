@@ -1,21 +1,28 @@
 import connectMongodb from '@/database';
 import Account from '@/models/Account';
 import { NextResponse } from 'next/server'
+import { hash } from 'bcryptjs';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req){
     try {
         await connectMongodb();
-    
-        const {name,uid,pin} = await req.json();
+        
+        const {searchParams} = new URL(req.url);
+        const id = searchParams.get('id');
 
-        const isAccountAlreadyExists = await Account.find({uid,name});
+        const getAllAccounts = await Account.find({uid:id});
 
-        if (isAccountAlreadyExists){
+        if (getAllAccounts){
+            return NextResponse.json({
+                success:true,
+                data:getAllAccounts
+            })
+        } else {
             return NextResponse.json({
                 success:false,
-                message:"Account already exists..",
+                message:"Something went wrong..."
             })
         }
         
