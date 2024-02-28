@@ -10,3 +10,5 @@ const connectMongodb = async () =>{
         console.log(e);
     }
 }
+
+export default connectMongodb;
